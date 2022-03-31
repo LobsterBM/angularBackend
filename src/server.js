@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-//const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3000;
 const router = require('./routes/routers');
 
 
@@ -13,7 +13,7 @@ app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 
 
-const port = process.env.NODE_PORT || 3000;
+//const port = process.env.NODE_PORT || 3000;
 
 
 
