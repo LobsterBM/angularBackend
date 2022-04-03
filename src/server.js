@@ -1,6 +1,10 @@
 const express = require('express');
 var cors = require('cors');
 const app = express();
+
+//use cors
+app.use(cors());
+
 const port = process.env.PORT || 3000;
 const router = require('./routes/routers');
 
@@ -21,16 +25,10 @@ app.use(express.urlencoded({extended: false}));
 
 app.use(`/`, router);
 
-//use cors
-app.use(cors());
 
 
-app.use(function(req, res, next) {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-    next();
-}
-);
+
+//use static files
 
 /* Error handler middleware */
 app.use((err, req, res, next) => {
