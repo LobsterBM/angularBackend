@@ -1,22 +1,22 @@
 const pool = require('../services/dbService').pool;
 
 
-// get list of all feedback with comments
-async function get(req,res){
-
+//get list of all feedback with comments
+async function getAll(req,res) {
     const text = `SELECT * FROM feedback WHERE LENGTH(comment) > 0`;
 
     const client = await pool.connect();
     client.query(text, (err,results) =>{
         if (err) {
+            //in case of error return error status
+            res.status(500).send(err);
             console.error(err);
             return;
         }
 
         client.release();
-
-
         res.status(200).json(results.rows)
+
     });
 }
 
@@ -27,6 +27,7 @@ async function getID(req,res) {
     const client = await pool.connect();
     client.query(text, (err,results) =>{
         if (err) {
+            res.status(500).send(err);
             console.error(err);
             return;
         }
@@ -45,6 +46,7 @@ async function getUID(req,res) {
     const client = await pool.connect();
     client.query(text, (err,results) =>{
         if (err) {
+            res.status(500).send(err);
             console.error(err);
             return;
         }
@@ -59,6 +61,16 @@ async function getUID(req,res) {
 //adds or updates rating & comment for an app from a user
 async function post(req,res){
     const id = req.params.id;
+
+    if(req.body.user_id === undefined || req.body.user_id === null){ //if user id is not provided
+        res.status(400).send("User id is required.");
+        return;
+    }
+    if(req.body.rating === undefined || req.body.rating === null){ //if rating is not provided
+        res.status(400).send("Rating is required.");
+        return;
+    }
+
 
 
 
@@ -102,6 +114,7 @@ async function post(req,res){
             res.status(200).send(results.rows);
         })
         .catch(err => {
+            res.status(500).send(err);
             console.log(err.stack);
             client.release();
         })
@@ -114,6 +127,20 @@ async function post(req,res){
 //adds or updates a notation for feedback from a user
 async function postNote(req,res){
     const id = req.params.id;
+
+    if(req.body.user_id === undefined || req.body.user_id === null){ //if user id is not provided
+        res.status(400).send("User id is required.");
+        return;
+    }
+    if(req.body.notation === undefined || req.body.notation === null){ //if rating is not provided
+        res.status(400).send("Notation is required.");
+        return;
+    }
+    if(req.body.feedback_id === undefined || req.body.feedback_id === null){ //if rating is not provided
+        res.status(400).send("Feedback id is required.");
+        return;
+    }
+
 
 
     // removes current rating from webapp
@@ -146,7 +173,9 @@ async function postNote(req,res){
         .then(results => {
         })
         .catch(err => {
+            res.status(500).send(err);
             console.log(err.stack)
+            return;
         })
 
     client.release();

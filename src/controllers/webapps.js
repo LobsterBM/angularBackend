@@ -8,6 +8,7 @@ async function get(req,res){
     const client = await pool.connect();
     const adato =  client.query(text, (err,results) =>{
         if (err) {
+            res.status(500).send(err);
             console.error(err);
             return;
         }
@@ -23,11 +24,16 @@ async function get(req,res){
 
 //get app by id
 async function getID(req,res) {
+    if(!req.params.id){
+        res.status(400).send("App id is required.");
+        return;
+    }
     const text = `SELECT * FROM web_apps WHERE app_id  = ${req.params.id}`;
 
     const client = await pool.connect();
     client.query(text, (err,results) =>{
         if (err) {
+            res.status(500).send(err);
             console.error(err);
             return;
         }
@@ -43,10 +49,12 @@ async function getID(req,res) {
 //create a webapp
 async function post(req,res){
 
+
     if(!req.body.app_name){
         res.status(400).send("App name is required.");
         return;
     }
+    
 
     const webApp = {
         user_id : req.body.user_id,
@@ -82,6 +90,12 @@ async function post(req,res){
 
 //update app by id
 async function put(req,res){
+    if(req.body.app_id === undefined){
+        res.status(400).send("App id is required.");
+        return;
+    }
+
+
     const id = req.body.app_id;
     let toUpdate = '';
 

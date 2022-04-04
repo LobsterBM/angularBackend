@@ -5,6 +5,7 @@ const pool = require('../services/dbService').pool;
 async function get(req, res){
 
 
+
     let uNameSearch = '';
     if (req.body.user_name !== undefined){
         uNameSearch += ' WHERE user_name = ';
@@ -29,6 +30,11 @@ async function get(req, res){
 
 //get user by name
 async function getByName(req,res){
+    if(req.params.name === undefined){
+        res.status(400).send("User name is required.");
+        return;
+    }
+
     const text = `SELECT * FROM users WHERE user_name  = '${req.params.name}' LIMIT 1`;
 
     console.log(text);
@@ -48,6 +54,11 @@ async function getByName(req,res){
 
 //get user by id
 async function getByID(req,res){
+    if(req.params.id === undefined){
+        res.status(400).send("User id is required.");
+        return;
+    }
+
     const text = `SELECT * FROM users WHERE user_id  = ${req.params.id}`;
 
     const client = await pool.connect();
@@ -140,6 +151,10 @@ async function put(req,res) {
 
 //remove user
 async function deleteUser(req,res){
+    if(req.params.id === undefined){
+        res.status(400).send("User id is required.");
+        return;
+    }
 
     let query = `DELETE FROM users where user_id = ${req.params.id}`;
     const client = await pool.connect();
