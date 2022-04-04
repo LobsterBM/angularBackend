@@ -2,7 +2,7 @@ const pool = require('../services/dbService').pool;
 
 
 //get list of all feedback with comments
-async function getAll(req,res) {
+async function get(req,res) {
     const text = `SELECT * FROM feedback WHERE LENGTH(comment) > 0`;
 
     const client = await pool.connect();
